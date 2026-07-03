@@ -48,15 +48,15 @@ done
 
 echo "Installing frp server..."
 FRP_RELEASE="frp_0.69.1_linux_amd64"
-wget https://github.com/fatedier/frp/releases/download/v0.69.1/$FRP_RELEASE.tar.gz
+wget --no-verbose https://github.com/fatedier/frp/releases/download/v0.69.1/$FRP_RELEASE.tar.gz
 tar -zxf "$FRP_RELEASE.tar.gz"
 cd "$FRP_RELEASE"
 
 echo "Configuring frp ..."
 cat > "frps.toml" <<EOF
-bind_port = 7000
-vhostHTTPPort = 8080
+bindPort = 7000
+vhostHTTPPort = 44488
 EOF
 
 echo "Running frp server..."
-./frps -c ./frps.toml
+nohup ./frps -c ./frps.toml > /var/log/frps.log 2>&1 &
