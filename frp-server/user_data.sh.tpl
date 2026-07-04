@@ -55,7 +55,8 @@ cd "$FRP_RELEASE"
 echo "Configuring frp ..."
 cat > "frps.toml" <<EOF
 bindPort = 7000
-vhostHTTPPort = 44488
+vhostHTTPPort = 48080
+vhostHTTPSPort = 48443
 EOF
 
 echo "Running frp server..."
