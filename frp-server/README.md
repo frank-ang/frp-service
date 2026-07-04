@@ -29,21 +29,13 @@ CloudWatch metrics.
 
 ## Usage
 
+Configure `terraform.tfvars` based on example [terraform.tfvars.template](terraform.tfvars.template)
+
+Deploy to the configured AWS account.
 ```bash
 terraform init
 terraform plan
 terraform apply
-```
-
-By default this deploys into your account's **default VPC** in `us-east-1`
-using all of that VPC's subnets. Override via variables, e.g.:
-
-```bash
-terraform apply \
-  -var="region=ap-southeast-1" \
-  -var='subnet_ids=["subnet-aaaa","subnet-bbbb"]' \
-  -var='ssh_ingress_cidrs=["203.0.113.4/32"]' \
-  -var="key_name=my-keypair"
 ```
 
 After apply, find the static IP with:

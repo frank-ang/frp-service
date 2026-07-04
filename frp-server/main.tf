@@ -61,15 +61,36 @@ resource "aws_security_group" "instance" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  dynamic "ingress" {
-    for_each = length(var.ssh_ingress_cidrs) > 0 ? [1] : []
-    content {
-      description = "SSH"
-      from_port   = 22
-      to_port     = 22
-      protocol    = "tcp"
-      cidr_blocks = var.ssh_ingress_cidrs
-    }
+  ingress {
+    description = "HTTP Service Port"
+    from_port   = var.http_port
+    to_port     = var.http_port
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "HTTPS Service Port"
+    from_port   = var.https_port
+    to_port     = var.https_port
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "frp server"
+    from_port   = 7000
+    to_port     = 7000
+    protocol    = "tcp"
+    cidr_blocks = var.ssh_ingress_cidrs
+  }
+
+  ingress {
+    description = "SSH"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = var.ssh_ingress_cidrs
   }
 
   tags = merge(local.common_tags, { Name = "${var.project_name}-sg" })
@@ -198,6 +219,8 @@ resource "aws_launch_template" "this" {
 
   user_data = base64encode(templatefile("${path.module}/user_data.sh.tpl", {
     eip_allocation_id = aws_eip.this.id
+    http_port         = var.http_port
+    https_port        = var.https_port
   }))
 
   tag_specifications {
@@ -268,4 +291,15 @@ resource "aws_autoscaling_group" "this" {
   lifecycle {
     create_before_destroy = true
   }
+
+  enabled_metrics = [
+    "GroupMinSize",
+    "GroupMaxSize",
+    "GroupDesiredCapacity",
+    "GroupInServiceInstances",
+    "GroupPendingInstances",
+    "GroupTerminatingInstances",
+    "GroupTotalInstances",
+  ]
+  metrics_granularity = "1Minute"
 }

@@ -1,7 +1,6 @@
 variable "region" {
   description = "AWS region to deploy into."
   type        = string
-  default     = "us-east-1"
 }
 
 variable "project_name" {
@@ -28,10 +27,21 @@ variable "key_name" {
   default     = null
 }
 
+variable "http_port" {
+  description = "HTTP port number."
+  type        = string
+  default     = "48080"
+}
+
+variable "https_port" {
+  description = "HTTPS port number."
+  type        = string
+  default     = "48443"
+}
+
 variable "ssh_ingress_cidrs" {
-  description = "CIDR blocks allowed to reach the instance on port 22. Leave empty to disable inbound SSH entirely (recommended; use SSM Session Manager instead)."
+  description = "CIDR blocks allowed to reach the instance on port 22."
   type        = list(string)
-  default     = []
 }
 
 variable "vpc_id" {
