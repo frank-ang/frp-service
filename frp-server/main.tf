@@ -62,9 +62,17 @@ resource "aws_security_group" "instance" {
   }
 
   ingress {
-    description = "Service Port"
-    from_port   = 44488
-    to_port     = 44488
+    description = "HTTP Service Port"
+    from_port   = var.http_port
+    to_port     = var.http_port
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "HTTPS Service Port"
+    from_port   = var.https_port
+    to_port     = var.https_port
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
@@ -211,6 +219,8 @@ resource "aws_launch_template" "this" {
 
   user_data = base64encode(templatefile("${path.module}/user_data.sh.tpl", {
     eip_allocation_id = aws_eip.this.id
+    http_port         = var.http_port
+    https_port        = var.https_port
   }))
 
   tag_specifications {
