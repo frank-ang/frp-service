@@ -1,0 +1,12 @@
+region="YOUR_AWS_REGION"
+project_name="spot-singleton"
+instance_type="t3.micro"
+spot_max_price="0.01"
+key_name="YOUR_KEY_PAIR_NAME"
+ssh_ingress_cidrs=["YOUR_BACK_END_IP/32"]
+vpc_id="YOUR_EXISTING_VPC_ID"
+subnet_ids=["YOUR_SUBNET_ID_1", "YOUR_SUBNET_ID_2", "YOUR_SUBNET_ID_3"]
+tags={
+   "Project" = "frp-service"
+   "Owner"   = "OWNER_NAME"
+}
