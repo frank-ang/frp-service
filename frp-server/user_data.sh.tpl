@@ -45,3 +45,19 @@ for i in $(seq 1 10); do
   echo "Attempt $i failed, retrying in 5s..."
   sleep 5
 done
+
+echo "Installing frp server..."
+FRP_RELEASE="frp_0.69.1_linux_amd64"
+wget --no-verbose https://github.com/fatedier/frp/releases/download/v0.69.1/$FRP_RELEASE.tar.gz
+tar -zxf "$FRP_RELEASE.tar.gz"
+cd "$FRP_RELEASE"
+
+echo "Configuring frp ..."
+cat > "frps.toml" <<EOF
+bindPort = 7000
+vhostHTTPPort = 48080
+vhostHTTPSPort = 48443
+EOF
+
+echo "Running frp server..."
+nohup ./frps -c ./frps.toml > /var/log/frps.log 2>&1 &
