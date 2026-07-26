@@ -1,23 +1,46 @@
 # FRP Client
 
-The backend server is the FRP Client.
+The `frpc` FRP Client exposes the actual back-end service to the front-end FRP Server `frps`.
 
 ## Backend Service
 
-Replace with your own service. E.g. Basic web server:
+Run a service at the backend, such as from a server at home.
+
+## Install FRP
+
+Download the [FRP release](https://github.com/fatedier/frp/releases). The client binary is `frpc`.
+
+Place `frpc` on the backend server.
+
+## FRP Client config
+
+The following illustrates frpc configurations for several possible back-end service types.
+
+### Option: TCP backend service
+
+E.g. [knots bitcoind](https://bitcoinknots.org/)
+
+frpc.toml
+```conf
+serverAddr = "FRP_SERVER_PUBLIC_HOST"
+serverPort = 7000
+
+[[proxies]]
+name = "knots"
+type = "tcp"
+localIP = "127.0.0.1" # IP of the back-end service
+localPort = 8333 # listening port of the back-end service
+remotePort = 38333 # listening port at the front-end frps proxy
+```
+
+### Option: Plain HTTP backend service
+
+Can be any web service. The following example command starts a basic web server:
 ```sh
 python3 -m http.server 8000
 ```
 
-## FRP install
-
-Download the [release](https://github.com/fatedier/frp/releases), the client binary is `frpc`.
-
-## FRP config
-
-### Option: Plain HTTP
-
-frpc.plain.toml
+frpc.http.toml
 ```conf
 serverAddr = "FRP_SERVER_PUBLIC_HOST"
 serverPort = 7000
@@ -30,6 +53,8 @@ customDomains = ["FRP_SERVER_PUBLIC_HOST"]
 ```
 
 ### Option: Encrypted HTTPS/TLS
+
+Scenario: backend HTTP server is plain text, and frpc is to proxy the service as encrypted HTTPS.
 
 #### Obtain TLS Certificate using certbot
 
@@ -61,7 +86,7 @@ This downloads Certificate/Key PEM files.
 
 #### FRP Client Config with HTTPS
 
-frpc.tls.toml
+frpc.https.toml
 ```conf
 serverAddr = "FRP_SERVER_PUBLIC_HOST"
 serverPort = 7000
@@ -90,4 +115,5 @@ frpc -c ./frpc.toml
 
 Verify by
 * Browsing to the configured public port of the FRP Server.
-* Curl, e.g. https: `curl https://$FRP_SERVER_PUBLIC_HOST:48443`
+* Curl, e.g. https: `curl https://$FRP_SERVER_PUBLIC_HOST:7000`
+* if TCP, netcat: `nc -vz $FRP_SERVER_PUBLIC_HOST $PORT`

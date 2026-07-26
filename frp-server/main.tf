@@ -78,6 +78,14 @@ resource "aws_security_group" "instance" {
   }
 
   ingress {
+    description = "TCP Service Port"
+    from_port   = var.tcp_port
+    to_port     = var.tcp_port
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
     description = "frp server"
     from_port   = 7000
     to_port     = 7000
