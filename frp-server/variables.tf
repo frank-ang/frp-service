@@ -39,6 +39,12 @@ variable "https_port" {
   default     = "48443"
 }
 
+variable "tcp_port" {
+  description = "TCP port number."
+  type        = string
+  default     = "23334"
+}
+
 variable "ssh_ingress_cidrs" {
   description = "CIDR blocks allowed to reach the instance on port 22."
   type        = list(string)
